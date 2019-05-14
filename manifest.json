@@ -1,0 +1,22 @@
+{
+  "name": "Tab2JSON",
+  "description": "Closes the active tab storing it as json file",
+  "manifest_version": 2,
+  "version": "0.1.1",
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  },
+  "permissions": [
+    "tabs",
+    "<all_urls>",
+    "downloads"
+  ],
+  "browser_action": {
+    "default_icon": "icons/icon.svg",
+    "default_title": "Tab2JSON"
+  },
+  "background": {
+    "scripts": ["tab2json.js"]
+  }
+}
