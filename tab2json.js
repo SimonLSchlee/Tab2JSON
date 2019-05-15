@@ -9,17 +9,23 @@ function tab2json(tab) {
 }
 
 function generateJSON(tab, preview) {
-  var payload = JSON.stringify({"hostname": hostname(tab.url), "url":tab.url, "title":tab.title, "preview":preview, "date": new Date().toISOString()});
-  var paylod_blob = new Blob([payload], {type: 'text/json'});
-  var payload_url = URL.createObjectURL(paylod_blob);
-  var payload_path = "tabs2json/" + getFilename(tab);
-  var downloading = browser.downloads.download({
-    url: payload_url,
-    filename : payload_path,
-    conflictAction: 'uniquify',
-    saveAs: false,
-  });
-  var removing = browser.tabs.remove(tab.id);
+    var payload = JSON.stringify({
+        "hostname": hostname(tab.url),
+        "url":tab.url,
+        "title":tab.title,
+        "preview":preview,
+        "date": new Date().toISOString()
+    });
+    var paylod_blob = new Blob([payload], {type: 'text/json'});
+    var payload_url = URL.createObjectURL(paylod_blob);
+    var payload_path = "tabs2json/" + getFilename(tab);
+    var downloading = browser.downloads.download({
+        url: payload_url,
+        filename : payload_path,
+        conflictAction: 'uniquify',
+        saveAs: false,
+    });
+    var removing = browser.tabs.remove(tab.id);
 }
 
 function hostname(URL) {

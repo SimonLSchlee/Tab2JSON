@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+         .center {
+             margin: auto;
+             width: 100px;
+         }
+         input {
+             width: 100%;
+         }
+         table {
+             width: 100%;
+             border-collapse: collapse;
+         }
+         /* table, th, td { */
+         /* border: 1px solid #AAA; */
+         /* } */
+         table th {
+             text-align:left;
+         }
+
+        </style>
+    </head>
+
+    <body>
+        <form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Shortcut</th>
+                    </tr>
+                </thead>
+                <tbody id="tablebody">
+                    <tr>
+                        <td>saves the current tab as json file and closes it</td>
+                        <td><input type="text" id="thistab" ></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="center">
+                <button id="save">Save</button>
+            </div>
+        </form>
+        <script src="options.js"></script>
+    </body>
+
+</html>
