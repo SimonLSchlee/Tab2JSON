@@ -1,6 +1,6 @@
 
 function tab2json(tab) {
-    var capturing = browser.tabs.captureTab(tab.id, {"format":"jpeg", "quality":50});
+    let capturing = browser.tabs.captureTab(tab.id, {"format":"jpeg", "quality":50});
     return capturing.then(function onPreview(preview) {
         return generateJSON(tab, preview);
     }, function onError() {
@@ -8,17 +8,33 @@ function tab2json(tab) {
     });
 }
 
+function asPNG(dataurl) {
+    return new Promise((resolve, reject) => {
+        let img    = document.createElement('img');
+        img.addEventListener('load', () => {
+            let canvas = document.createElement('canvas');
+            canvas.width  = img.width;
+            canvas.height = img.height;
+            canvas.getContext('2d').drawImage(img, 0, 0);
+            resolve(canvas.toDataURL("image/png"));
+        });
+        img.src = dataurl;
+    });
+}
+
 async function generateJSON(tab, preview) {
-    var payload = JSON.stringify({
+    let favicon = tab.favIconUrl? await asPNG(tab.favIconUrl) : false;
+    let payload = JSON.stringify({
         "hostname": hostname(tab.url),
         "url":tab.url,
         "title":tab.title,
+        "favicon":favicon,
         "preview":preview,
         "date": new Date().toISOString()
     });
-    var paylod_blob = new Blob([payload], {type: 'text/json'});
-    var payload_url = URL.createObjectURL(paylod_blob);
-    var payload_path = "tabs2json/" + getFilename(tab);
+    let payload_blob = new Blob([payload], {type: 'text/json'});
+    let payload_url = URL.createObjectURL(payload_blob);
+    let payload_path = "tabs2json/" + getFilename(tab);
     await browser.downloads.download({
         url: payload_url,
         filename : payload_path,
@@ -29,13 +45,13 @@ async function generateJSON(tab, preview) {
 }
 
 function hostname(URL) {
-    var newAnchor = document.createElement('a');
+    let newAnchor = document.createElement('a');
     newAnchor.href = URL;
     return newAnchor.hostname;
 }
 
 function getFilename(tab) {
-    var filename = tab.title + '_' + hostname(tab.url);
+    let filename = tab.title + '_' + hostname(tab.url);
     return filename.replace(/\s+/g, "_").replace(/[^\w.]/g, "").replace(/__+/g, "_") + '.json';
 }
 
