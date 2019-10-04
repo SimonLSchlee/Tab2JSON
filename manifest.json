@@ -20,6 +20,10 @@
     "scripts": ["tab2json.js"]
   },
   "commands": {
+    "savetab": {
+      "suggested_key": { "default": "Ctrl+Shift+Insert" },
+      "description": "saves the current tab"
+    },
     "thistab": {
       "suggested_key": { "default": "Ctrl+Shift+Down" },
       "description": "saves the current tab and closes it"

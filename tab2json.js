@@ -1,10 +1,18 @@
 
-function tab2json(tab) {
-    let capturing = browser.tabs.captureTab(tab.id, {"format":"jpeg", "quality":50});
+async function tab2json(tab, dont_close) {
+    let preview = await tryGetPreview(tab.id);
+    await generateJSON(tab, preview);
+    if(!dont_close){
+        await browser.tabs.remove(tab.id);
+    }
+}
+
+function tryGetPreview(tabid) {
+    let capturing = browser.tabs.captureTab(tabid, {"format":"jpeg", "quality":50});
     return capturing.then(function onPreview(preview) {
-        return generateJSON(tab, preview);
+        return preview;
     }, function onError() {
-        return generateJSON(tab, false);
+        return false;
     });
 }
 
@@ -41,7 +49,6 @@ async function generateJSON(tab, preview) {
         conflictAction: 'uniquify',
         saveAs: false,
     });
-    await browser.tabs.remove(tab.id);
 }
 
 function hostname(URL) {
@@ -61,6 +68,10 @@ function first(x) {return x[0];}
 
 async function currentTab() {
     return first(await browser.tabs.query({active: true}));
+}
+
+async function savetab() {
+    return tab2json(await currentTab(), true);
 }
 
 async function thistab() {
@@ -97,6 +108,9 @@ async function alltabs() {
 
 browser.commands.onCommand.addListener(async (command) => {
     switch (command) {
+    case "savetab":
+        await savetab();
+        break;
     case "thistab":
         await thistab();
         break;
