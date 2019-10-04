@@ -30,6 +30,19 @@ function asPNG(dataurl) {
     });
 }
 
+// based on: https://stackoverflow.com/a/17415677
+function toTimezoneIsoString(date) {
+    let tzo = -date.getTimezoneOffset();
+    let dif = tzo >= 0 ? '+' : '-';
+    let pad = function(num) {
+        let norm = Math.floor(Math.abs(num));
+        return (norm < 10 ? '0' : '') + norm;
+    };
+    return date.toISOString().slice(0,23) +
+        dif + pad(tzo / 60) +
+        ':' + pad(tzo % 60);
+}
+
 async function generateJSON(tab, preview) {
     let favicon = tab.favIconUrl? await asPNG(tab.favIconUrl) : false;
     let payload = JSON.stringify({
@@ -38,7 +51,7 @@ async function generateJSON(tab, preview) {
         "title":tab.title,
         "favicon":favicon,
         "preview":preview,
-        "date": new Date().toISOString()
+        "date": toTimezoneIsoString(new Date)
     });
     let payload_blob = new Blob([payload], {type: 'text/json'});
     let payload_url = URL.createObjectURL(payload_blob);
