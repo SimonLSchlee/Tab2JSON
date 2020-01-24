@@ -56,12 +56,13 @@ async function generateJSON(tab, preview) {
     let payload_blob = new Blob([payload], {type: 'text/json'});
     let payload_url = URL.createObjectURL(payload_blob);
     let payload_path = "tabs2json/" + getFilename(tab);
-    await browser.downloads.download({
+    let download_id = await browser.downloads.download({
         url: payload_url,
         filename : payload_path,
         conflictAction: 'uniquify',
         saveAs: false,
     });
+    await browser.downloads.erase({id: download_id});
 }
 
 function hostname(URL) {
@@ -74,8 +75,6 @@ function getFilename(tab) {
     let filename = tab.title + '_' + hostname(tab.url);
     return filename.replace(/\s+/g, "_").replace(/[^\w.]/g, "").replace(/__+/g, "_") + '.json';
 }
-
-browser.browserAction.onClicked.addListener(tab2json);
 
 function first(x) {return x[0];}
 
@@ -90,6 +89,8 @@ async function savetab() {
 async function thistab() {
     return tab2json(await currentTab());
 }
+
+browser.browserAction.onClicked.addListener(thistab);
 
 async function tabSelectDelta(delta) {
     let tab = await currentTab();
