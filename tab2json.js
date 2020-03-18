@@ -79,7 +79,7 @@ function getFilename(tab) {
 function first(x) {return x[0];}
 
 async function currentTab() {
-    return first(await browser.tabs.query({active: true}));
+    return first(await browser.tabs.query({active: true, currentWindow: true}));
 }
 
 async function savetab() {
